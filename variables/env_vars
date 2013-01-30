@@ -1,0 +1,6 @@
+#!/bin/bash
+#This file exports environmental variables needed by various programs. Paths for applications will be imported from global_vars. 
+
+source ./global_vars
+
+
