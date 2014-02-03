@@ -1,0 +1,17 @@
+#!/bin/bash
+#For Java Decompiler
+#Java Decompiler (JAD)
+function jad(){
+    local command='/opt/jad/jad'
+    if [[ "$1" == *.class ]]; then
+        $command -o $1 2>/dev/null >/dev/null
+        jad_file="${1%.*}.jad"
+        jad_java_file="$jad_file.java"
+        mv $jad_file $jad_java_file
+        local vim=`which vim`
+        $vim $jad_java_file
+        rm $jad_java_file
+    else
+        echo "Cant decompile with JAD. Must be a *.class file"      
+    fi
+}

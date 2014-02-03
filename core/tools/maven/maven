@@ -1,0 +1,20 @@
+#!/bin/bash
+
+function mvn(){
+    local command=`which mvn`
+    if [[ "$1" == "st" ]]; then
+        local goal="clean install -Dmaven.test.skip=true"
+        echo "mvn" "$goal" "${@:2}"
+        $command $goal ${@:2}
+#         mvn-color $goal ${@:2}
+    elif [[ "$1" == "ii" ]]; then
+        local goal="idea:idea"
+        echo "mvn" "$goal" "${@:2}"
+        $command $goal ${@:2}
+#        mvn-color $goal ${@:2}
+    else
+        $command $@
+#        mvn-color $@
+fi
+}
+

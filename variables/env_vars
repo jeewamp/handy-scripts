@@ -1,6 +1,32 @@
 #!/bin/bash
-#This file exports environmental variables needed by various programs. Paths for applications will be imported from global_vars. 
+#This file exports environmental variables needed by various programs.
 
-source ./global_vars
+#export JAVA_HOME=/usr/lib/jvm/jdk1.6.0_37
+export JAVA_HOME=/usr/lib/jvm/jdk1.7.0_21
 
+if [ -z "$JAVA_OPTS" ]; then
+JAVA_OPTS="-Djava.awt.headless=true -Xmx2048m -XX:MaxPermSize=2048m"
+fi
+
+#Maven---------
+export M2_HOME=/opt/apache-maven
+export M2=$M2_HOME/bin
+#export MAVEN_OPTS="-Xms256m -Xmx512m"
+export MAVEN_OPTS='-Xmx1024m -XX:MaxPermSize=512m'
+
+#ANT-----------
+export ANT_HOME=/opt/apache-ant
+
+#CATALINA (Tomcat)--------
+#export CATALINA_HOME=$_TOMCAT
+
+
+
+
+
+#PATH - Shold come to the bottom---------
+export PATH=$PATH:$JAVA_HOME/bin
+export PATH=$PATH:$ANT_HOME/bin
+#export PATH=$PATH:/usr/lib/idea-IC-111.277/bin
+export PATH=$PATH:$M2
 

@@ -1,0 +1,72 @@
+#!/bin/bash
+#This has functions ans aliases to run applications in the system easily
+
+source ~/.scripts/utils/prop_file_reader
+
+#Run stuff easily
+function run(){
+  
+    if [ ! -z $1 ] ; then
+      case $1 in
+        wso2)       ./bin/wso2server.sh       ;;
+        *)     echo "'$1' cannot run '$i'" ;;
+         esac
+    else
+         echo "empty command. What do you want to run?"
+    fi
+}
+
+#Java Decompiler (JAD)
+function jad(){
+    local command='/opt/jad/jad'
+    if [[ "$1" == *.class ]]; then
+        $command -o $1 2>/dev/null >/dev/null
+        jad_file="${1%.*}.jad"
+	jad_java_file="$jad_file.java"
+	mv $jad_file $jad_java_file
+	local vim=`which vim`
+	$vim $jad_java_file	
+	rm $jad_java_file
+    else
+        echo "Cant decompile with JAD. Must be a *.class file"	    
+    fi
+}
+
+#IntellijIDEA
+function idea(){
+    local readlink=`which readlink`
+    local path=`"$readlink" -f $1`
+    get_prop_val paths idea idea_path
+    $idea_path/bin/idea.sh $path &
+}
+
+function clean_idea(){
+        #find . \( -name "*.c" -o -name "*.h" -o -name "*.sc" -o -name "*.ini" \) 
+	file_names=`find . -name "*.i*"`
+	for i in $file_names
+	do
+	print "Do you want to delete the file? $i"
+	read input
+	if ans='y'
+	then
+	rm -f $i
+	else 
+	#do nothing
+	echo "File not deleted"
+	fi
+	done
+}
+
+#Prints My docs. The Doc file paths must be specified in 
+# ~/.scripts/repository/properties_files/my_docs.properties file
+function doc() {
+    get_prop_val my_docs "$1" my_doc
+    if [ ! -z $my_doc ] ; then
+	    eval my_doc=$my_doc
+	    echo My doc: $my_doc
+	    echo ----------------
+	    echo
+	    cat_command=`which cat`
+	    $cat_command $my_doc
+    fi	    
+}

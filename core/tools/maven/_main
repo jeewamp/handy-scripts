@@ -1,0 +1,5 @@
+#!/bin/bash
+this="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $this/maven
+source $this/mvncolour
+

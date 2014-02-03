@@ -1,0 +1,45 @@
+#!/bin/bash
+#This file contains shortcuts to change directory easily
+
+source ~/.scripts/utils/prop_file_reader
+
+#Override "cd". Have to filter ..2/3/4 etc otherwise normal path.
+
+function cd() {
+    local first_two=${1:0:2} #2 chars from 0th pos
+    local up=''
+
+    if [ "$first_two" == ".." ]
+        then
+        up=${1:2}
+    fi
+
+    if [[ "$up" =~ ^[0-9]+$ ]]; then
+        local str=""
+        local count=0
+        while [ "$count" -lt "$up" ];
+        do
+            str=$str"../"
+            let count=count+1
+        done
+        builtin cd $str
+	return
+    fi
+    
+#    echo $@
+    builtin cd "$@"
+}
+
+function goto() {
+    if [ -n "$1" ]; then
+         get_prop_val paths "$1" my_path
+         if [ ! -z $my_path ] ; then
+             eval my_path=$my_path
+             cd "$my_path"
+         else
+             echo Cant go to "$1"
+         fi	     
+     else
+      echo "Enter the dir you want to goto"
+     fi
+}

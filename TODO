@@ -1,0 +1,6 @@
+vim $(grep -rIl "2.1.1-wso2v7" . --include=pom.xml) can open file by file from :next
+cat $(grep -rIl "2.1.1-wso2v7" . --include=pom.xml) concatnates all the files into one.
+grep -rIl "2.1.1-wso2v7" . --include=pom.xml | xargs sed -i 's/2.1.1-wso2v7/2.1.1-wso2v8/g'
+
+
+Write a script to cleanup idea files and eclipse files. Same maven project should be able to open from idea and eclipse (for jsp debugging, etc)

@@ -1,0 +1,6 @@
+#!/bin/bash
+this="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $this/change_dir
+source $this/gnu_hacks
+source $this/run_ez
+source $this/tools/_main

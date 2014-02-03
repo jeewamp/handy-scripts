@@ -1,0 +1,47 @@
+#!/bin/bash
+#This reads a java style properties file and put to an bash associative array
+#From blog http://devdragon.com/2012/09/reading-java-style-properties-files-in-bash-scripts/
+
+source ~/.scripts/constants/scripts_consts
+
+#read Keys from   : echo "${!PROPERTIES[@]}"
+#read Values from : echo "${PROPERTIES[@]}"
+function read_prop_file(){
+      
+        unset PROPERTIES[@]
+	declare -Ag PROPERTIES # this creates a bash version of  a map (also known in other languages as an associative array)
+
+	while read line; do
+		line=`echo $line | awk '{split($0,a, /[#!]/); print a[1]}'` # ignore all text after a "#" or "!"
+		read -rd '' line <<< "$line" # trim decommented line. <<< redirects $line as input stream to "read -rd line" command as if got input stream from a pipe.
+		if [ -n "$line" ]; then #skip empty. ie: if $line is not empty
+			splitidx=`expr index "$line" '[=:]'` # get the first index of the equals sign or colon
+			if [ $splitidx = 0 ]; then
+				key="$line"
+				val=""
+			else
+				key=${line:0:$splitidx-1} # string before assignment operator
+				val=${line:$splitidx} # string after assignment operator
+			fi
+			read -rd '' key <<< "$key" # trim string
+			key=${key//./|} # nasty ugly hack for associative arrays not being allowed to have periods in the key
+			read -rd '' val <<< "$val" #trim string
+			PROPERTIES+=( ["$key"]="$val" ) # add a new key/value to the map
+		fi
+	done < $1
+}
+
+#parse properties file name($1), key($2) and return_var_name($3). Returns value if key exists, else null.
+function get_prop_val(){
+    if [ ! -z $1 ] && [ ! -z $2 ] && [ ! -z $3 ] ; then
+
+	    if [[ "$PROPERTIES_FILE_NAME" != "$1" ]]; then
+		    PROPERTIES_FILE_NAME=$1
+	    fi
+	    local return_val=$3
+	    prop_file_path="$PROPERTIES_FILES_PATH""/$PROPERTIES_FILE_NAME"".properties" 
+	    read_prop_file $prop_file_path
+            value=${PROPERTIES["$2"]+${PROPERTIES["$2"]}}
+	    eval $return_val="'$value'"
+    fi
+}
